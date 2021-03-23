@@ -1,14 +1,21 @@
 const express = require("express");
-const dotenv = requite("dotenv");
+const dotenv = require("dotenv");
 const morgan = require("morgan");
+const colors = require("colors");
+const connectDB = require("./config/db");
+// Load env variables
+dotenv.config({ path: "./config/config.env" });
 
 // Routes
 const bootcamps = require("./routes/bootcamps");
 
-// Load env variables
-dotenv.config({ path: "./config/config.env" });
+// DB
+connectDB();
 
 const app = express();
+
+// Body Parser
+app.use(express.json());
 
 // Middleware
 if (process.env.NODE_ENV === "development") {
@@ -23,6 +30,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(
-    `Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`
+    `Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`.blue
+      .bold
   );
 });
