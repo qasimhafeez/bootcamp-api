@@ -10,6 +10,7 @@ const morgan = require("morgan");
 const errorHandler = require("./middleware/error");
 // Routes
 const bootcamps = require("./routes/bootcamps");
+const courses = require("./routes/courses");
 
 // DB
 connectDB();
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Mount Routers
 app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
 app.use(errorHandler);
 
 // Server Config
