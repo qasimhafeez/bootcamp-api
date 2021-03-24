@@ -7,7 +7,34 @@ const asyncHandler = require("../middleware/async");
 // @route     GET /api/v1/bootcamps
 // @access    Public
 exports.getBootCamps = asyncHandler(async (req, res, next) => {
-  const bootcamps = await Bootcamp.find();
+  let query;
+  const reqQuery = { ...req.query };
+
+  const removeFields = ["select"];
+  removeFields.forEach((param) => delete reqQuery[param]);
+
+  let queryStr = JSON.stringify(reqQuery);
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/, (match) => `$${match}`);
+
+  // find the resources in DB
+  query = Bootcamp.find(JSON.parse(queryStr));
+
+  // Select Fields
+  if (req.query.select) {
+    const fields = req.query.select.split(",").join(" ");
+    query = query.select(fields);
+  }
+
+  // Sort
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(",").join(" ");
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort("-createdAt");
+  }
+
+  const bootcamps = await query;
+
   if (!bootcamps) {
     return next(new ErrorResponse(`${req.params.id} id not found`, 404));
   }
