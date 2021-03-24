@@ -10,7 +10,7 @@ exports.getBootCamps = asyncHandler(async (req, res, next) => {
   let query;
   const reqQuery = { ...req.query };
 
-  const removeFields = ["select"];
+  const removeFields = ["select", "sort", "page", "limit"];
   removeFields.forEach((param) => delete reqQuery[param]);
 
   let queryStr = JSON.stringify(reqQuery);
@@ -33,14 +33,45 @@ exports.getBootCamps = asyncHandler(async (req, res, next) => {
     query = query.sort("-createdAt");
   }
 
+  // Pagination
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Bootcamp.countDocuments();
+
+  query = query.skip(startIndex).limit(limit);
+
   const bootcamps = await query;
+
+  // Pagination Result
+  const pagination = {};
+
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
 
   if (!bootcamps) {
     return next(new ErrorResponse(`${req.params.id} id not found`, 404));
   }
   res
     .status(200)
-    .json({ success: true, count: bootcamps.length, data: bootcamps });
+    .json({
+      success: true,
+      count: bootcamps.length,
+      pagination,
+      data: bootcamps,
+    });
 });
 
 // @desc      Get single Bootcamp
