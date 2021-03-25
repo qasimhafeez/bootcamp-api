@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const colors = require("colors");
@@ -29,6 +30,9 @@ if (process.env.NODE_ENV === "development") {
 
 // File Upload
 app.use(fileUpload());
+
+// Set Static Folder
+app.use(express.static(path.join(__dirname, "public")));
 
 // Mount Routers
 app.use("/api/v1/bootcamps", bootcamps);
