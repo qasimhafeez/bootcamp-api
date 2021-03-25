@@ -48,6 +48,17 @@ exports.login = asyncHandler(async (req, res, next) => {
   sendTokenReponse(user, 200, res);
 });
 
+// @desc      Get current logged in user
+// @route     GET /api/v1/auth/me
+// @access    Private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+
 //-----------CustomFunctions------------//
 
 // Get token from the model, create cookie and send response
@@ -71,14 +82,3 @@ const sendTokenReponse = (user, statusCode, res) => {
     .cookie("cookie-name-token", token, options)
     .json({ success: true, token });
 };
-
-// @desc      Get current logged in user
-// @route     GET /api/v1/auth/me
-// @access    Private
-exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
-});
