@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const colors = require("colors");
 const connectDB = require("./config/db");
 const fileUpload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 // Load env variables
 dotenv.config({ path: "./config/config.env" });
 
@@ -23,15 +24,14 @@ const app = express();
 //--------------Middlewares----------------//
 // Body Parser
 app.use(express.json());
-
+// Cookie Parser
+app.use(cookieParser());
 // Morgan(color)
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-
 // File Upload
 app.use(fileUpload());
-
 // Set Static Folder
 app.use(express.static(path.join(__dirname, "public")));
 
