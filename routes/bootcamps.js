@@ -19,7 +19,10 @@ const { protect, authorize } = require("../middleware/auth");
 
 // Include other resources into routes
 const courseRouter = require("./courses");
+const reviewRouter = require("./reviews");
+
 router.use("/:bootcampId/courses", courseRouter);
+router.use("/:bootcampId/reviews", reviewRouter);
 
 router
   .route("/")
