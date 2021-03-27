@@ -24,17 +24,17 @@ router.use("/:bootcampId/courses", courseRouter);
 router
   .route("/")
   .get(advancedResults(Bootcamp, "courses"), getBootCamps)
-  .post(protect, authorize("publisher", "user"), createBootCamp);
+  .post(protect, authorize("publisher", "admin"), createBootCamp);
 
 router
   .route("/:id/photo")
-  .put(protect, authorize("publisher", "user"), bootcampPhotoUpload);
+  .put(protect, authorize("publisher", "admin"), bootcampPhotoUpload);
 
 router
   .route("/:id")
   .get(getBootCamp)
-  .put(protect, authorize("publisher", "user"), updateBootCamp)
-  .delete(protect, authorize("publisher", "user"), deleteBootCamp);
+  .put(protect, authorize("publisher", "admin"), updateBootCamp)
+  .delete(protect, authorize("publisher", "admin"), deleteBootCamp);
 
 router.route("/radius/:zipcode/:distance").get(getBootCampsInRadius);
 
